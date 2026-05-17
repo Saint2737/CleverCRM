@@ -15,29 +15,43 @@ import com.cleverCRM.service.AnalyticsAggregateService;
 @RequestMapping("/api/analytics")
 public class AnalyticsAggregateController {
 
-	private final AnalyticsAggregateService analyticsAggregateService;
-	
-	public AnalyticsAggregateController(AnalyticsAggregateService analyticsAggregateService) {
-		this.analyticsAggregateService = analyticsAggregateService;
-	}
+    private final AnalyticsAggregateService analyticsService;
 
-	
-	@GetMapping
-	public ResponseEntity<AnalyticsSummary> getAnalysis(
-	    @RequestParam(defaultValue = "week") String filter,
-	    @RequestParam(required = false) String start,
-	    @RequestParam(required = false) String end
-	) {
-	    return ResponseEntity.ok(
-	        analyticsAggregateService.getSummary(filter, start, end)
-	    );
-	}
-	
-	@GetMapping("/insights")
-	public List<String> getInsights() {
-	    return analyticsAggregateService.generateInsights();
-	}
-	
-	
+    public AnalyticsAggregateController(
+            AnalyticsAggregateService analyticsService) {
+        this.analyticsService = analyticsService;
+    }
+
+    /* ================= DASHBOARD SUMMARY ================= */
+
+    @GetMapping("/summary")
+    public ResponseEntity<AnalyticsSummary> getSummary(
+
+            @RequestParam(defaultValue = "week")
+            String filter,
+
+            @RequestParam(required = false)
+            String start,
+
+            @RequestParam(required = false)
+            String end) {
+
+        return ResponseEntity.ok(
+                analyticsService.getSummary(
+                        filter,
+                        start,
+                        end
+                )
+        );
+    }
+
+    /* ================= AI INSIGHTS ================= */
+
+    @GetMapping("/insights")
+    public ResponseEntity<List<String>> getInsights() {
+
+        return ResponseEntity.ok(
+                analyticsService.generateInsights()
+        );
+    }
 }
-
