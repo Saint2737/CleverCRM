@@ -1,10 +1,15 @@
 package service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
 import DTO.GuestHistoryRequest;
+import com.cleverCRM.exception.ResourceNotFoundException;
+import entity.Guest;
 import entity.GuestHistory;
 import repository.GuestHistoryRepository;
+import repository.GuestRepository;
 
 @Service
 public class GuestHistoryService {
@@ -19,7 +24,11 @@ public class GuestHistoryService {
 	
 	public GuestHistory addHistory(GuestHistoryRequest request) {
 		
-		Guest guest = guestRepository.findById(request.guestId()).orElseThrow(() -> new RuntimeException("Guest not found"));
+		if (request == null || request.guestId() == null) {
+			throw new IllegalArgumentException("guestId is required");
+		}
+		Guest guest = guestRepository.findById(request.guestId())
+				.orElseThrow(() -> new ResourceNotFoundException("Guest", request.guestId()));
 		GuestHistory h = new GuestHistory();
 		h.setGuest(guest);
 		h.setCheckInDate(LocalDate.now());
@@ -33,8 +42,14 @@ public class GuestHistoryService {
 	
     
     
-    public GuestHistory getGuestHistory(UUID guestId) {
-    	return historyRepo.findAllById(guestId);
+    public List<GuestHistory> getGuestHistory(UUID guestId) {
+    	if (guestId == null) {
+    		throw new IllegalArgumentException("guestId is required");
+    	}
+    	if (!guestRepository.existsById(guestId)) {
+    		throw new ResourceNotFoundException("Guest", guestId);
+    	}
+    	return historyRepo.findByGuestId(guestId);
     }
 
 }

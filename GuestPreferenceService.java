@@ -1,6 +1,10 @@
 package service;
 
+import java.util.UUID;
+
 import DTO.GuestPreferencesRequest;
+import com.cleverCRM.exception.ResourceNotFoundException;
+import entity.Guest;
 import entity.GuestPreferences;
 import repository.GuestPreferenceRepository;
 import repository.GuestRepository;
@@ -17,10 +21,14 @@ public class GuestPreferenceService {
     }
     
     public GuestPreferences savePreferences(GuestPreferencesRequest request) {
-    	Guest guest = guestRepo.findById(request.guestID()).orElseThrow(() -> new RuntimeException("Guest not found"));
-    	GuestPreferences g = guestPrefRepo.findById(request.guestID());
+    	if (request == null || request.guestID() == null) {
+    		throw new IllegalArgumentException("guestID is required");
+    	}
+    	Guest guest = guestRepo.findById(request.guestID())
+    			.orElseThrow(() -> new ResourceNotFoundException("Guest", request.guestID()));
+    	GuestPreferences g = guestPrefRepo.findById(request.guestID())
+    			.orElseGet(GuestPreferences::new);
     	
-    	if(g==null) g = new GuestPreferences();
     	g.setBedTypePreferences(request.bedType());
     	g.setGuest(guest);
     	g.setAllergies(request.allergies());  
@@ -35,8 +43,11 @@ public class GuestPreferenceService {
     }
     
     public GuestPreferences getGuestPreference(UUID guestId) {
-    	
-    	return guestPrefRepo.findById(guestId);
+    	if (guestId == null) {
+    		throw new IllegalArgumentException("guestId is required");
+    	}
+    	return guestPrefRepo.findById(guestId)
+    			.orElseThrow(() -> new ResourceNotFoundException("GuestPreferences", guestId));
     }
     
     

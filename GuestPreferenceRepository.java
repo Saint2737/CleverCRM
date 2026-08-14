@@ -1,8 +1,9 @@
 package repository;
 
-public interface GuestPreferenceRepository extends JpaRepositories <GuestPreferences, UUID> {
-	
-	GuestPreferences findById(UUId id);
-	GuestPreferences save(GuestPreferences g);
+import java.util.UUID;
+
+import entity.GuestPreferences;
+
+public interface GuestPreferenceRepository extends JpaRepository <GuestPreferences, UUID> {
 
 }

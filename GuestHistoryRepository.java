@@ -1,7 +1,12 @@
 package repository;
 
-public interface GuestHistoryRepository extends JpaRepositories<GuestHistory, UUID> {
+import java.util.List;
+import java.util.UUID;
+
+import entity.GuestHistory;
+
+public interface GuestHistoryRepository extends JpaRepository<GuestHistory, UUID> {
 	
-	GuestHistory findById(UUID guestId);
+	List<GuestHistory> findByGuestId(UUID guestId);
 
 }

@@ -1,5 +1,6 @@
 package com.cleverCRM.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,14 +20,18 @@ public class FileIngestionController {
     }
 
     @PostMapping("/file")
-    public String uploadFile(
+    public ResponseEntity<String> uploadFile(
             @RequestParam String sourceType,
             @RequestParam String sourceId,
             @RequestParam MultipartFile file
     ) {
 
-        ingestionService.ingestFile(null, sourceType, sourceId, file);
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("file must not be empty");
+        }
 
-        return "File ingested successfully";
+        int chunks = ingestionService.ingestFile(null, sourceType, sourceId, file);
+
+        return ResponseEntity.ok("File ingested successfully: " + chunks + " chunks");
     }
 }

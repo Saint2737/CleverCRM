@@ -19,6 +19,7 @@ public class Guest {
 	private String email;
 	private String phone;
 	private String gender;
+	private String nationality;
 	
 	private int totalVisits;
 	private BigDecimal averageSpending;
@@ -134,16 +135,10 @@ public class Guest {
 		this.preferences = preferences;
 	}
 	public void setNationality(String nationality) {
-		// TODO Auto-generated method stub
-		
+		this.nationality = nationality;
 	}
 	public String getNationality() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	public Guest orElseThrow(Object object) {
-		// TODO Auto-generated method stub
-		return null;
+		return nationality;
 	}
 	
 	

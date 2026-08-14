@@ -1,3 +1,5 @@
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 
 @RestController
@@ -17,8 +19,8 @@ public class GuestHistoryController {
 	}
 	
 	@PostMapping("/history")
-	public ResponseEntity<GuestHistory> getGuestHistory(@RequestBody UUID guestId){
-		return guestHistoryService.getGuestHistory(guestId);
+	public ResponseEntity<List<GuestHistory>> getGuestHistory(@RequestBody UUID guestId){
+		return ResponseEntity.ok(guestHistoryService.getGuestHistory(guestId));
 	}
 	
 	
