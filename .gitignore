@@ -1,0 +1,23 @@
+# Secrets / local config
+.env
+.env.*
+*.pem
+*.key
+application-local.properties
+application-secrets.properties
+
+# Build output
+target/
+build/
+out/
+bin/
+*.class
+*.jar
+
+# IDE
+.idea/
+*.iml
+.settings/
+.classpath
+.project
+.vscode/

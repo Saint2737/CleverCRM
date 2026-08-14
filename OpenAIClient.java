@@ -3,6 +3,8 @@ package component;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
+
 import service.Feedback;
 
 @component
@@ -10,11 +12,16 @@ public class OpenAiClient{
 	private final WebClient webClient;
 	private final String apiKey;
 	
-	public OpenAiClient{
-		this.apiKey = System.getenv().getOrDefault("OPENAI_API_KEY","MY_API_KEY");
+	public OpenAiClient() {
+		String apiKey = System.getenv("OPENAI_API_KEY");
+		if (apiKey == null || apiKey.isBlank()) {
+			throw new IllegalStateException(
+					"OpenAI API key is not configured. Set the OPENAI_API_KEY environment variable.");
+		}
+		this.apiKey = apiKey;
 		this.webClient = WebClient.builder()
 				.baseUrl("https://api.openai.com/v1")
-				.defaultHeader(HtttpHeaders.AUTHORIZATION, "Bearer" + this.apiKey)
+				.defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + this.apiKey)
 				.build();
 						
 	}
