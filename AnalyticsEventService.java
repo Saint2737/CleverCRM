@@ -9,35 +9,27 @@ public class AnalyticsEventService {
 	}
 	
 	@Transactional(readOnly = true)
-	public PaginatedResponse<AnalyticsEvent> getByEventType(String eventType, Pageable pageable){
-		Page<AnalyticsEvent> page =  analyticsEventRepository.findByEventType(eventType, pageable)
-				.map(this::toDTO);
-		
-		return toPaginatedResponse(page);
+	public PaginatedResponse<AnalyticsEventDTO> getByEventType(String eventType, Pageable pageable){
+		return toPage(analyticsEventRepository.findByEventType(eventType, pageable));
 	}
 	
 	@Transactional(readOnly = true)
-	public PaginatedResponse<AnalyticsEvent> getByModule(String module, Pageable pageable){
-		Page<AnalyticsEvent> page = analyticsEventRepository.findByModule(module, pageable)
-				.map(this::toDTO);
-		
-		return toPaginatedResponse(page);
+	public PaginatedResponse<AnalyticsEventDTO> getByModule(String module, Pageable pageable){
+		return toPage(analyticsEventRepository.findByModule(module, pageable));
 	}
 	
 	@Transactional(readOnly = true)
-	public PaginatedResponse<AnalyticsEvent> getByReferenceType(String referenceType, Pageable pageable){
-		Page<AnalyticsEvent> page = analyticsEventRepository.findByReferenceType(referenceType, pageable)
-				.map(this::toDTO);
-		
-		return toPaginatedResponse(page);
+	public PaginatedResponse<AnalyticsEventDTO> getByReferenceType(String referenceType, Pageable pageable){
+		return toPage(analyticsEventRepository.findByReferenceType(referenceType, pageable));
 	}
 	
 	@Transactional(readOnly = true)
-	public PaginatedResponse<AnalyticsEvent> getByReferenceId(int referenceId, Pageable pageable){
-		Page<AnalyticsEvent> page = analyticsEventRepository.findByReferenceId(referenceId, pageable)
-				.map(this::toDTO);
-		
-		return toPaginatedResponse(page);
+	public PaginatedResponse<AnalyticsEventDTO> getByReferenceId(int referenceId, Pageable pageable){
+		return toPage(analyticsEventRepository.findByReferenceId(referenceId, pageable));
+	}
+	
+	private PaginatedResponse<AnalyticsEventDTO> toPage(Page<AnalyticsEvent> events) {
+		return PageMapper.toPaginatedResponse(events.map(this::toDTO));
 	}
 	
 	private AnalyticsEventDTO toDTO(AnalyticsEvent entity) {
@@ -48,20 +40,5 @@ public class AnalyticsEventService {
 				entity.getReferenceId());
 		
 	}
-	
-	private <T> PaginatedResponse<T> toPaginatedResponse(Page<T> page){
-		return new PaginatedResponse<>(
-				page.getContent(),
-				page.getPage(),
-				page.getSize(),
-				page.getTotalElements(),
-				page.getTotalPages(),
-				page.getHasNext(),
-				page.getHasPrevious()
-				);
-				
-	}
-	
-	
 	
 }

@@ -2,12 +2,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "report")
-public class Report {
+public class Report extends IdentityEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
 	private String name;
 	private String type;
 	private String generatedBy;
@@ -16,13 +12,6 @@ public class Report {
 	private String reportData;
 	
 	private LocalDateTime generatedAt = LocalDateTime.now();
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 	public String getName() {
 		return name;

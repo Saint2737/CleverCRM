@@ -2,11 +2,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name="settings")
-public class Settings {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+public class Settings extends IdentityEntity {
 	
 	private String key;
 	//timezone,hotel_name,task_autoAssign
@@ -14,13 +10,6 @@ public class Settings {
 	//AfricaGMt, Safari Park, true
 	private String description;
 	private LocalDateTime updatedAt = LocalDateTime.now();
-	
-	public int getId() {
-		return id;
-	}
-	public void setId() {
-		this.id = id;
-	}
 	
 	public String getKey() {
 		return key;

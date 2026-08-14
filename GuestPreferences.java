@@ -1,14 +1,8 @@
 package entity;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "guest_preferences")
-public class GuestPreferences {
-	
-	@Id
-	@GeneratedValue
-	private UUID id;
+public class GuestPreferences extends UuidEntity {
 	
 	@OneToOne
 	@JoinColumn(name =="guest_id")
@@ -23,13 +17,6 @@ public class GuestPreferences {
 	
 	@Column(columnDefinition = "TEXT")
 	private String customPreferences;
-	
-	public UUID getId() {
-		return id;
-	}
-	public void setId(UUID id) {
-		this.id = id;
-	}
 	
 	public Guest getGuest() {
 		return guest;

@@ -4,6 +4,7 @@ import DTO.GuestPreferencesRequest;
 import entity.GuestPreferences;
 import repository.GuestPreferenceRepository;
 import repository.GuestRepository;
+import util.EntityLookup;
 
 public class GuestPreferenceService {
 	
@@ -17,7 +18,7 @@ public class GuestPreferenceService {
     }
     
     public GuestPreferences savePreferences(GuestPreferencesRequest request) {
-    	Guest guest = guestRepo.findById(request.guestID()).orElseThrow(() -> new RuntimeException("Guest not found"));
+    	Guest guest = EntityLookup.orThrow(guestRepo.findById(request.guestID()), "Guest", request.guestID());
     	GuestPreferences g = guestPrefRepo.findById(request.guestID());
     	
     	if(g==null) g = new GuestPreferences();

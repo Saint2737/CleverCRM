@@ -2,15 +2,10 @@ package entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name ="guest_history")
-public class GuestHistory {
-	
-	@Id
-	@GeneratedValue
-	private UUID id;
+public class GuestHistory extends UuidEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "guest_id")
@@ -23,13 +18,6 @@ public class GuestHistory {
 	
 	@Column(ColumnDefinition = "TEXT")
 	private String feedbackSummary;
-	
-	public UUID getId() {
-		return id;
-	}
-	public void setId(UUID id) {
-		this.id = id;
-	}
 	
 	public Guest getGuest() {
 		return guest;

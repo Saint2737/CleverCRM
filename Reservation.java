@@ -3,11 +3,7 @@ package entity;
 
 @Entity
 @Table(name = "reservations")
-public class Reservation {
-	
-	@Id
-	@GeneratedValue
-	private UUID id;
+public class Reservation extends UuidEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "guest_id")

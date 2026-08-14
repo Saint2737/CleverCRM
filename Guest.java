@@ -4,15 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "guests")
-public class Guest {
-	
-	@Id 
-	@GeneratedValue
-	private UUID id;
+public class Guest extends UuidEntity {
 	
 	private String firstName;
 	private String lastName;
@@ -34,13 +29,6 @@ public class Guest {
 	
 	@OneToOne(mappedBy = "guest", cascade = CascadeType.ALL)
 	private GuestPreferences preferences;
-	
-	public UUID getId() {
-		return id;
-	}
-	public void setId(UUID id) {
-		this.id =id;
-	}
 	
 	public String getFirstName() {
 		return firstName;

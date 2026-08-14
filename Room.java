@@ -3,12 +3,8 @@ package entity;
 
 @Entity
 @Table(name = "room")
-public class Room {
+public class Room extends UuidEntity {
 
-	@Id
-	@GeneratedValue
-	private UUID id;
-	
 	private String roomNumber;
 	private String roomType;
 	private BigDecimal basePrice;

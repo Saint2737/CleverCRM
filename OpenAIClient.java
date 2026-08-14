@@ -3,10 +3,13 @@ package component;
 import java.util.List;
 import java.util.Map;
 
-import service.Feedback;
+import util.VectorUtils;
 
 @component
 public class OpenAiClient{
+	private static final String CHAT_MODEL = "gpt-4o-mini";
+	private static final String EMBEDDING_MODEL = "text-embedding-small";
+	
 	private final WebClient webClient;
 	private final String apiKey;
 	
@@ -22,104 +25,74 @@ public class OpenAiClient{
 	public float[] createEmbedding(String text) {
 		
 		//minimal example body for embeddings endpoint
-		Map<String, Object> body = Map.of("model", "text-embedding-small", "input", text);
+		Map<String, Object> body = Map.of("model", EMBEDDING_MODEL, "input", text);
 		
-		Map response = webClient.post()
-				.uri("/embeddings");
-				.contentType(MediaType.APPLICATION_JSON)
-				.body(BodyInserters.fromValue(body))
-				.retrieve()
-				.bodyToMono(map.class)
-				.block();
-				
+		Map<String, Object> response = post("/embeddings", body);
+		
 		//response structure
-		List data = (List)response.get("data");
-		Map first = (Map)data.get(0);
-		List embeddingList = (List)first.get("embedding");
-		float[] vector = new float[embeddingList.size()];
-		for(int i = 0, i < embeddingList.size(); i++) 
-			vector[i] = ((Number)embeddingList.get(i)).floatValue();
+		List<Map<String, Object>> data = (List<Map<String, Object>>)response.get("data");
+		List<Number> embeddingList = (List<Number>)data.get(0).get("embedding");
 		
-		
-		return  vector;
+		return VectorUtils.toFloatArray(embeddingList);
 			
 	}
 	
 	
 	//call chat completion to generate response
 	public String createChatCompletions(String systemPrompt, List<Map<String, String>> messages, double temperature) {
-		Map<String, Object> body = Map.of("model", "gpt-4o-mini", "messages", messages, "temperature", temperature);
-		Map resp = webClient.post()
-				.uri("/chat/completions")
+		Map<String, Object> body = Map.of("model", CHAT_MODEL, "messages", messages, "temperature", temperature);
+		
+		return firstChoiceContent(post("/chat/completions", body));
+	}
+	
+	public String analyzeFeedback(String feedbackText) {
+		String sentiment = prompt(
+				"You are a sentiment analyzer. Classify the following feedback as positive,negative or neutral",
+				feedbackText).trim().toLowerCase();
+		
+		if(sentiment.contains("positive")) return "positive";
+		if(sentiment.contains("negative")) return "negative";
+		if(sentiment.contains("neutral")) return "neutral";
+		
+		return "unknown";
+	}
+	
+	public String classifyMessage(String content) {
+		return prompt(
+				"You are a message classifier. classify the message text considering the intent and objective of the text and recommend necessary action to follow.",
+				content);
+	}
+	
+	//single system + user turn, the shape every prompt in this client uses
+	private String prompt(String systemPrompt, String userContent) {
+		return createChatCompletions(
+				systemPrompt,
+				List.of(
+						Map.of("role", "system", "content", systemPrompt),
+						Map.of("role", "user", "content", userContent)),
+				0);
+	}
+	
+	private Map<String, Object> post(String uri, Map<String, Object> body) {
+		return webClient.post()
+				.uri(uri)
 				.contentType(MediaType.APPLICATION_JSON)
 				.body(BodyInserters.fromValue(body))
 				.retrieve()
 				.bodyToMono(Map.class)
 				.block();
-		
-		List choices = (List)resp.get("choices");
-		if(choices == null || choices.isEmpty()) return "";
-		Map choice0 = (Map)choices.get(0);
-		Map message = (Map)choice0.get("message");
-		
-		return (String)message.get("content");
-		
-	}	
-	
-
-	
-	public String analyzeFeedback(String feedbackText) {
-		
-		Map<String, Object> requestBody = Map.of("model", "gpt-4o-mini",
-				"messages", List.of(Map.of("role","system","content","You are a sentiment analyzer." +" " + "Classify the following feedback as positive,negative or neutral"), 
-						Map.of("role","user","content", feedbackText)), "temperature",0);
-		
-		Map response = webClient.post()
-				.uri("/chat/completions")
-				.contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(requestBody)
-				.retrieve()
-				.bodyToMono(Map.class)
-				.block();
-		
-		if(response == null) {
-			return "unknown";
-		}
-		
-		List<Map<String,Object>> choices = (List<Map<String,Object>>) response.get("choices");
-		if(choices == null || choices.isEmpty()) return "unknown";
-		
-		Map<String,Object> message = (Map<String, Object>) choices.get(0).get("message");
-		
-		String sentiment = ((String)message.get("content")).trim().toLowerCase();
-		if(sentiment.contains("positive") ) return "positive";
-		if(sentiment.contains("negative")) return "negative";
-		if(sentiment.contains("neutral")) return "neutral";
-		
 	}
 	
-
-
-
-
-	public String classifyMessage(String content) {
+	private String firstChoiceContent(Map<String, Object> response) {
+		if(response == null) return "";
 		
-		Map<String, Object> requestBody = Map.of("model","gpt-4o-mini", "messages", List.of(Map.of("role", "system","content","You are a message classifier." + " " + "classify the message text considering the intent and objective of the text and recommend necessary action to follow."),
-				Map.of("role", "user", "content", content)), "temperature", 0);
+		List<Map<String, Object>> choices = (List<Map<String, Object>>)response.get("choices");
+		if(choices == null || choices.isEmpty()) return "";
 		
-		Map response = webClient.post()
-				.uri("/chat/classify")
-				.contentType(MediaType.APPLICATION_JSON)
-				.bodyValue(requestBody)
-				.retrieve()
-				.bodyToMono(Map.class)
-				.block();
+		Map<String, Object> message = (Map<String, Object>)choices.get(0).get("message");
+		if(message == null) return "";
 		
-		if(response == null) {
-			return "unknown";
-		}
-		
-		List<Map>
-		// TODO Auto-generated method stub
-		return null;
-	}}
+		return (String)message.get("content");
+	}
+	
+}

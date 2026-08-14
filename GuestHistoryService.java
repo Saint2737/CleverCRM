@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import DTO.GuestHistoryRequest;
 import entity.GuestHistory;
 import repository.GuestHistoryRepository;
+import util.EntityLookup;
 
 @Service
 public class GuestHistoryService {
@@ -19,7 +20,7 @@ public class GuestHistoryService {
 	
 	public GuestHistory addHistory(GuestHistoryRequest request) {
 		
-		Guest guest = guestRepository.findById(request.guestId()).orElseThrow(() -> new RuntimeException("Guest not found"));
+		Guest guest = EntityLookup.orThrow(guestRepository.findById(request.guestId()), "Guest", request.guestId());
 		GuestHistory h = new GuestHistory();
 		h.setGuest(guest);
 		h.setCheckInDate(LocalDate.now());

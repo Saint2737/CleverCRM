@@ -2,25 +2,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "analyticsEvent")
-public class AnalyticsEvent {
+public class AnalyticsEvent extends IdentityEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
 	private String eventType; //message_received,task_completed,
 	private String module; //reservations,tasks, guests
 	private int referenceId;
 	private String referenceType;
 	private String metadataJson;
 	private LocalDateTime timestamp = LocalDateTime.now();
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 	public String getEventType() {
 		return eventType;

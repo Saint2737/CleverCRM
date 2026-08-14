@@ -1,15 +1,10 @@
 package entity;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "messages")
-public class Message {
-	
-	@Id
-	@GeneratedValue
-	private UUID id;
+public class Message extends UuidEntity {
 	
 	@ManyToOne
 	@JoinColumn(name = "guest_id")
@@ -25,13 +20,6 @@ public class Message {
 	private String category;
 	private LocalDateTime timeStamp;
 	private Boolean isRead = false;
-	
-	public UUID getId() {
-		return id;
-	}
-	public void setId(UUID id) {
-		this.id = id;
-	}
 	
 	public  Guest getGuest() {
 		return guest;

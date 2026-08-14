@@ -3,6 +3,7 @@ package service;
 import java.util.List;
 
 import entity.CrmChunk;
+import util.VectorUtils;
 
 public class ChunkingService {
 	
@@ -52,12 +53,7 @@ public class ChunkingService {
 			EmbeddingsResponse resp = openAiClient.createEmbedding(req);
 			
 			List<Float> vector = resp.getData().get(0).getEmbedding();
-			
-			//convert List<float> to a primitive float array 
-			float[] vectorArr = new float[vector.size()];
-			for( int j = 0; j < vector.size(); j++) {
-				vectorArr[j] = vector.get(j);
-			}
+			float[] vectorArr = VectorUtils.toFloatArray(vector);
 			
 			CrmChunk crmChunk = new CrmChunk();
 			crmChunk.setSourceType(sourceType);

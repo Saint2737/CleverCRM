@@ -1,14 +1,9 @@
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import jakarta.persistence.GenerationType;
-
 @Entity
 @Table(name = "notification")
-public class Notification {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+public class Notification extends IdentityEntity {
 	
 	private int staffId;
 	private String title;
@@ -24,14 +19,6 @@ public class Notification {
 	public enum Status{
 		UNREAD,
 		READ
-	}
-	
-	public int getId() {
-		return id;
-		
-	}
-	public void setId(int id) {
-		this.id = id;
 	}
 	
 	public int getStaffId() {

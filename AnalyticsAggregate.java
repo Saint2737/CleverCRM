@@ -1,13 +1,7 @@
-import jakarta.persistence.GenerationType;
-
 @Entity
 @Table(name = "analyticsAggregate")
-public class AnalyticsAggregate {
+public class AnalyticsAggregate extends IdentityEntity {
  
-	@Id
-	@GeneratedValue(Strategy = GenerationType.IDENTITY)
-	private int id;
-	
 	private LocalDate date;
 	private int totalReservations;
 	private int totalCheckIns;
@@ -21,13 +15,6 @@ public class AnalyticsAggregate {
 	
 	@Column(columnDefinition = "TEXT")
 	private String extraJson;
-	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	
 	public LocalDate getDate() {
 		return date;

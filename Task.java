@@ -1,11 +1,8 @@
 
 @Entity
 @Table(name="tasks")
-public class Task {
+public class Task extends IdentityEntity {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
 	private String serviceTitle;
 	private String serviceDescription;
 	private String serviceType;
@@ -32,12 +29,6 @@ public class Task {
 	
 	}
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public String getServiceTitle() {
 		return serviceTitle;
 	}
